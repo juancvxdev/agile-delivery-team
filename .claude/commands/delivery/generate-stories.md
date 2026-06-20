@@ -1,6 +1,6 @@
 ---
 description: El Developer refina las historias candidatas hasta que cumplan INVEST + Definition of Ready. Pasa por el gate dor-invest.
-argument-hint: "<carpeta del delivery, p. ej. deliveries/citasalud>"
+argument-hint: "<carpeta del delivery, p. ej. deliveries/citasdentista>"
 ---
 
 # Refinar historias (INVEST + Definition of Ready)

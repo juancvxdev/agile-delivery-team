@@ -1,6 +1,6 @@
 ---
 description: El Product Owner descompone el MVP del Discovery Agent en épicas y un backlog priorizado por valor.
-argument-hint: "<carpeta del delivery, p. ej. deliveries/citasalud>"
+argument-hint: "<carpeta del delivery, p. ej. deliveries/citasdentista>"
 ---
 
 # Generar épicas y backlog
