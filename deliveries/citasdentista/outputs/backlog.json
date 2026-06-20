@@ -56,13 +56,13 @@
       "acceptance_criteria": [
         "Dado que eligi doctor, horario y motivo, cuando completo nombre, cedula, telefono y correo, entonces el sistema crea la cita en estado pendiente y la asocia a ese turno.",
         "Dado que envio la reserva, cuando recepcion la revisa, entonces los datos ya estan capturados y solo los valida (no los recoge de nuevo).",
-        "Dado que es una cita de control y no primera vez, cuando reservo, entonces el sistema no me exige mas datos de los necesarios."
+        "Dado que es una cita de control y no primera vez, cuando reservo, entonces el sistema no me exige mas datos de los necesarios.",
+        "Dado que mi cita queda en estado pendiente, cuando transcurren 24 horas sin que recepcion la valide, entonces el sistema libera automaticamente el turno y la cita pasa a estado expirado (decision de refinamiento: ventana de retencion de 24 h).",
+        "Dado que mi cita pendiente sigue dentro de la ventana de 24 horas, cuando otro paciente consulta ese mismo turno, entonces el turno aparece como ocupado y no puede reservarse."
       ],
       "estimate": 5,
       "dependencies": ["US-01"],
-      "open_questions": [
-        "El inbox no define por cuanto tiempo la cita en estado 'pendiente' retiene el turno ni que pasa si recepcion nunca la valida."
-      ],
+      "open_questions": [],
       "priority": 2,
       "origin": ["us:US-02", "req:R-02", "req:R-13", "req:R-14", "pain:sin-visibilidad-horarios", "pain:recopilacion-datos-repetitiva"]
     },
@@ -70,17 +70,16 @@
       "id": "US-03",
       "epic": "E-02",
       "as_a": "paciente",
-      "want": "recibir un comprobante de confirmacion apenas reservo",
+      "want": "recibir un comprobante de confirmacion por correo electronico apenas reservo",
       "so_that": "quedar seguro de que la cita quedo agendada y no con la duda",
       "acceptance_criteria": [
-        "Dado que completo la reserva, cuando el sistema la registra, entonces recibo de inmediato un comprobante con doctor, fecha, hora y motivo.",
-        "Dado que recibi el comprobante, cuando llego a la clinica, entonces mi cita aparece en el sistema con los mismos datos del comprobante."
+        "Dado que completo la reserva con un correo valido, cuando el sistema la registra, entonces recibo de inmediato por correo electronico un comprobante con doctor, fecha, hora y motivo (decision de refinamiento: correo electronico como canal por defecto del MVP).",
+        "Dado que recibi el comprobante, cuando llego a la clinica, entonces mi cita aparece en el sistema con los mismos datos del comprobante.",
+        "Dado que el envio del comprobante falla, cuando consulto el enlace de la reserva, entonces puedo ver el comprobante en pantalla y reenviarlo a mi correo."
       ],
       "estimate": 3,
       "dependencies": ["US-02"],
-      "open_questions": [
-        "El inbox no especifica el canal del comprobante (correo, SMS, WhatsApp)."
-      ],
+      "open_questions": [],
       "priority": 3,
       "origin": ["us:US-03", "req:R-03", "pain:incertidumbre-confirmacion", "pain:desconfianza-disponibilidad"]
     },
@@ -88,18 +87,16 @@
       "id": "US-04",
       "epic": "E-02",
       "as_a": "paciente",
-      "want": "recibir un recordatorio automatico antes de la cita",
+      "want": "recibir un recordatorio automatico por correo electronico antes de la cita",
       "so_that": "no olvidarla y poder cancelar a tiempo si no podre asistir",
       "acceptance_criteria": [
-        "Dado que tengo una cita confirmada, cuando se acerca la fecha, entonces recibo un recordatorio con fecha, hora, doctor e instrucciones previas.",
-        "Dado que recibo el recordatorio, cuando no podre asistir, entonces el mismo mensaje me permite cancelar o reagendar."
+        "Dado que tengo una cita confirmada, cuando faltan 24 horas para la cita, entonces recibo por correo electronico un recordatorio con fecha, hora, doctor e instrucciones previas (decision de refinamiento: un unico envio, 24 h antes, por correo electronico).",
+        "Dado que recibo el recordatorio, cuando no podre asistir, entonces el mismo mensaje incluye el enlace para cancelar o reagendar la cita.",
+        "Dado que la cita se reservo con menos de 24 horas de anticipacion, cuando se confirma, entonces el recordatorio se envia de inmediato tras la confirmacion."
       ],
       "estimate": 5,
       "dependencies": ["US-03", "US-05"],
-      "open_questions": [
-        "El inbox no fija con cuanta anticipacion se envia el recordatorio ni si hay mas de un envio.",
-        "El inbox no especifica el canal del recordatorio (correo, SMS, WhatsApp)."
-      ],
+      "open_questions": [],
       "priority": 4,
       "origin": ["us:US-04", "req:R-04", "pain:olvido-cita", "pain:espacios-perdidos-no-show", "pain:impacto-no-shows"]
     },
@@ -107,17 +104,17 @@
       "id": "US-05",
       "epic": "E-02",
       "as_a": "paciente",
-      "want": "cancelar o reagendar mi cita desde un enlace",
+      "want": "cancelar o reagendar mi cita desde un enlace unico y personal",
       "so_that": "no tener que llamar ni escribir y esperar, liberando el espacio para alguien mas",
       "acceptance_criteria": [
         "Dado que tengo una cita confirmada, cuando uso el enlace para cancelar, entonces el turno vuelve a quedar disponible para otros pacientes.",
-        "Dado que quiero reagendar, cuando elijo un nuevo turno libre, entonces el turno anterior se libera y la cita queda en el nuevo horario sin intervencion de recepcion."
+        "Dado que quiero reagendar, cuando elijo un nuevo turno libre, entonces el turno anterior se libera y la cita queda en el nuevo horario sin intervencion de recepcion.",
+        "Dado que el enlace de gestion es unico, personal y no adivinable (token aleatorio), cuando se abre, entonces solo permite gestionar la cita asociada a ese enlace y ninguna otra (decision de refinamiento: enlace con token unico no adivinable, alcance limitado a su cita).",
+        "Dado un enlace de gestion alterado o invalido, cuando alguien lo abre, entonces el sistema niega el acceso y no muestra datos de ninguna cita."
       ],
       "estimate": 5,
       "dependencies": ["US-02"],
-      "open_questions": [
-        "El inbox no define como se asegura el enlace para evitar que un tercero acceda a la cita del paciente."
-      ],
+      "open_questions": [],
       "priority": 5,
       "origin": ["us:US-05", "req:R-05", "pain:reagendamiento-laborioso", "pain:espacios-perdidos-no-show"]
     },
@@ -129,13 +126,12 @@
       "so_that": "eliminar el doble agendamiento y los horarios mal anotados",
       "acceptance_criteria": [
         "Dado un turno ya ocupado, cuando alguien (paciente o recepcion) intenta reservarlo, entonces el sistema rechaza la operacion y muestra que el turno ya no esta libre.",
-        "Dado que dos reservas llegan casi a la vez para el mismo turno, cuando se procesan, entonces solo una queda registrada y la otra es rechazada."
+        "Dado que dos reservas llegan casi a la vez para el mismo turno, cuando se procesan, entonces solo la primera en confirmarse (primer commit gana, por orden de llegada) queda registrada y la otra es rechazada con un mensaje que ofrece elegir otro turno (decision de refinamiento: desempate por primer commit / orden de llegada).",
+        "Dado que mi reserva fue rechazada por concurrencia, cuando vuelvo a la disponibilidad, entonces ese turno ya no aparece como libre."
       ],
       "estimate": 5,
       "dependencies": ["US-02"],
-      "open_questions": [
-        "El inbox no define la regla de desempate cuando dos reservas casi simultaneas compiten por el turno (orden de llegada u otra)."
-      ],
+      "open_questions": [],
       "priority": 6,
       "origin": ["us:US-06", "req:R-06", "pain:doble-agendamiento", "pain:multiples-canales-sin-fuente-verdad"]
     },
