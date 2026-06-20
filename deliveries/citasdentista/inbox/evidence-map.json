@@ -1,0 +1,94 @@
+{
+  "personas": [
+    { "name": "D. (doctor)", "role": "doctor", "primary": true },
+    { "name": "P. (paciente)", "role": "paciente", "primary": true },
+    { "name": "S. (secretaria)", "role": "secretaria", "primary": true }
+  ],
+  "pains": [
+    {
+      "id": "agenda-impredecible",
+      "source": "doctor.md",
+      "persona": "D. (doctor)"
+    },
+    {
+      "id": "sin-visibilidad-tiempo-real",
+      "source": "doctor.md",
+      "persona": "D. (doctor)"
+    },
+    {
+      "id": "espacios-perdidos-no-show",
+      "source": "doctor.md",
+      "persona": "D. (doctor)"
+    },
+    {
+      "id": "sin-contexto-previo",
+      "source": "doctor.md",
+      "persona": "D. (doctor)"
+    },
+    {
+      "id": "riesgo-abandono-sistema",
+      "source": "doctor.md",
+      "persona": "D. (doctor)"
+    },
+    {
+      "id": "sin-visibilidad-horarios",
+      "source": "paciente.md",
+      "persona": "P. (paciente)"
+    },
+    {
+      "id": "incertidumbre-confirmacion",
+      "source": "paciente.md",
+      "persona": "P. (paciente)"
+    },
+    {
+      "id": "olvido-cita",
+      "source": "paciente.md",
+      "persona": "P. (paciente)"
+    },
+    {
+      "id": "reagendamiento-laborioso",
+      "source": "paciente.md",
+      "persona": "P. (paciente)"
+    },
+    {
+      "id": "desconfianza-disponibilidad",
+      "source": "paciente.md",
+      "persona": "P. (paciente)"
+    },
+    {
+      "id": "multiples-canales-sin-fuente-verdad",
+      "source": "secretaria.md",
+      "persona": "S. (secretaria)"
+    },
+    {
+      "id": "doble-agendamiento",
+      "source": "secretaria.md",
+      "persona": "S. (secretaria)"
+    },
+    {
+      "id": "impacto-no-shows",
+      "source": "secretaria.md",
+      "persona": "S. (secretaria)"
+    },
+    {
+      "id": "confirmacion-manual",
+      "source": "secretaria.md",
+      "persona": "S. (secretaria)"
+    },
+    {
+      "id": "recopilacion-datos-repetitiva",
+      "source": "secretaria.md",
+      "persona": "S. (secretaria)"
+    },
+    {
+      "id": "falta-reportes-operativos",
+      "source": "secretaria.md",
+      "persona": "S. (secretaria)"
+    },
+    {
+      "id": "disponibilidad-sistema",
+      "source": "secretaria.md",
+      "persona": "S. (secretaria)"
+    }
+  ]
+}

@@ -1,0 +1,176 @@
+{
+  "epics": [
+    {
+      "id": "E-01",
+      "title": "El paciente reserva su cita solo, viendo turnos reales",
+      "value": "El paciente deja de preguntar uno a uno por WhatsApp/llamada y agenda por si mismo desde el celular sobre horarios que reflejan el estado real; sube el % de citas creadas en el sistema y se elimina la desconfianza de 'llegar y que no aparezca'.",
+      "priority": 1,
+      "origin": ["mvp:reserva-online", "mvp:ver-disponibilidad", "req:R-01", "req:R-02", "req:R-13", "req:R-14", "req:R-17", "pain:sin-visibilidad-horarios", "pain:desconfianza-disponibilidad", "pain:recopilacion-datos-repetitiva"]
+    },
+    {
+      "id": "E-02",
+      "title": "El paciente confirma, recuerda y libera su cita (menos no-shows)",
+      "value": "Mueve la metrica de exito del MVP: tasa de no-show. El paciente queda seguro de que reservo, no olvida la cita y puede cancelar/reagendar a tiempo, devolviendo el turno al pool; suben las asistencias y se aprovechan turnos antes perdidos.",
+      "priority": 2,
+      "origin": ["mvp:confirmacion-automatica", "mvp:recordatorio-automatico", "mvp:cancelar-reagendar", "req:R-03", "req:R-04", "req:R-05", "pain:incertidumbre-confirmacion", "pain:olvido-cita", "pain:reagendamiento-laborioso", "pain:espacios-perdidos-no-show", "pain:impacto-no-shows"]
+    },
+    {
+      "id": "E-03",
+      "title": "Recepcion opera sobre una unica fuente de verdad, sin choques",
+      "value": "Habilita la adopcion de recepcion: deja de cruzar llamadas/WhatsApp/papel, no se producen dobles agendamientos y el estado de cada cita vive en un solo lugar. Reduce el trabajo manual y el riesgo de abandono del sistema.",
+      "priority": 3,
+      "origin": ["mvp:anti-doble-agendamiento", "mvp:fuente-unica-estado", "req:R-06", "req:R-07", "req:R-15", "pain:doble-agendamiento", "pain:multiples-canales-sin-fuente-verdad", "pain:confirmacion-manual"]
+    },
+    {
+      "id": "E-04",
+      "title": "El doctor llega a cada turno informado y con agenda al dia",
+      "value": "El doctor deja de atender a ciegas y de sorprenderse con cambios: ve su agenda en tiempo real con el contexto de cada cita, lo que hace la jornada predecible.",
+      "priority": 4,
+      "origin": ["mvp:agenda-doctor-tiempo-real", "req:R-09", "req:R-10", "pain:sin-contexto-previo", "pain:sin-visibilidad-tiempo-real", "pain:agenda-impredecible"]
+    }
+  ],
+  "stories": [
+    {
+      "id": "US-01",
+      "epic": "E-01",
+      "as_a": "paciente",
+      "want": "ver los horarios realmente disponibles por doctor y dia",
+      "so_that": "elegir uno sin tener que preguntar uno a uno y esperar respuesta",
+      "acceptance_criteria": [
+        "Dado que abro el enlace de reserva, cuando selecciono un doctor y un dia, entonces veo solo los turnos libres de ese doctor para ese dia.",
+        "Dado que un turno acaba de ser ocupado por otra persona, cuando consulto la disponibilidad, entonces ese turno ya no aparece como libre.",
+        "Dado que no hay turnos libres en el dia elegido, cuando lo selecciono, entonces el sistema me lo indica y me ofrece el siguiente dia con cupo."
+      ],
+      "estimate": 5,
+      "dependencies": [],
+      "open_questions": [],
+      "priority": 1,
+      "origin": ["us:US-01", "req:R-01", "req:R-17", "pain:sin-visibilidad-horarios", "pain:desconfianza-disponibilidad"]
+    },
+    {
+      "id": "US-02",
+      "epic": "E-01",
+      "as_a": "paciente",
+      "want": "reservar mi cita desde un enlace ingresando yo mismo mis datos (nombre, cedula, telefono, correo, motivo)",
+      "so_that": "no depender de un chat largo con recepcion y agendar en pocos pasos desde el celular",
+      "acceptance_criteria": [
+        "Dado que eligi doctor, horario y motivo, cuando completo nombre, cedula, telefono y correo, entonces el sistema crea la cita en estado pendiente y la asocia a ese turno.",
+        "Dado que envio la reserva, cuando recepcion la revisa, entonces los datos ya estan capturados y solo los valida (no los recoge de nuevo).",
+        "Dado que es una cita de control y no primera vez, cuando reservo, entonces el sistema no me exige mas datos de los necesarios."
+      ],
+      "estimate": 5,
+      "dependencies": ["US-01"],
+      "open_questions": [
+        "El inbox no define por cuanto tiempo la cita en estado 'pendiente' retiene el turno ni que pasa si recepcion nunca la valida."
+      ],
+      "priority": 2,
+      "origin": ["us:US-02", "req:R-02", "req:R-13", "req:R-14", "pain:sin-visibilidad-horarios", "pain:recopilacion-datos-repetitiva"]
+    },
+    {
+      "id": "US-03",
+      "epic": "E-02",
+      "as_a": "paciente",
+      "want": "recibir un comprobante de confirmacion apenas reservo",
+      "so_that": "quedar seguro de que la cita quedo agendada y no con la duda",
+      "acceptance_criteria": [
+        "Dado que completo la reserva, cuando el sistema la registra, entonces recibo de inmediato un comprobante con doctor, fecha, hora y motivo.",
+        "Dado que recibi el comprobante, cuando llego a la clinica, entonces mi cita aparece en el sistema con los mismos datos del comprobante."
+      ],
+      "estimate": 3,
+      "dependencies": ["US-02"],
+      "open_questions": [
+        "El inbox no especifica el canal del comprobante (correo, SMS, WhatsApp)."
+      ],
+      "priority": 3,
+      "origin": ["us:US-03", "req:R-03", "pain:incertidumbre-confirmacion", "pain:desconfianza-disponibilidad"]
+    },
+    {
+      "id": "US-04",
+      "epic": "E-02",
+      "as_a": "paciente",
+      "want": "recibir un recordatorio automatico antes de la cita",
+      "so_that": "no olvidarla y poder cancelar a tiempo si no podre asistir",
+      "acceptance_criteria": [
+        "Dado que tengo una cita confirmada, cuando se acerca la fecha, entonces recibo un recordatorio con fecha, hora, doctor e instrucciones previas.",
+        "Dado que recibo el recordatorio, cuando no podre asistir, entonces el mismo mensaje me permite cancelar o reagendar."
+      ],
+      "estimate": 5,
+      "dependencies": ["US-03", "US-05"],
+      "open_questions": [
+        "El inbox no fija con cuanta anticipacion se envia el recordatorio ni si hay mas de un envio.",
+        "El inbox no especifica el canal del recordatorio (correo, SMS, WhatsApp)."
+      ],
+      "priority": 4,
+      "origin": ["us:US-04", "req:R-04", "pain:olvido-cita", "pain:espacios-perdidos-no-show", "pain:impacto-no-shows"]
+    },
+    {
+      "id": "US-05",
+      "epic": "E-02",
+      "as_a": "paciente",
+      "want": "cancelar o reagendar mi cita desde un enlace",
+      "so_that": "no tener que llamar ni escribir y esperar, liberando el espacio para alguien mas",
+      "acceptance_criteria": [
+        "Dado que tengo una cita confirmada, cuando uso el enlace para cancelar, entonces el turno vuelve a quedar disponible para otros pacientes.",
+        "Dado que quiero reagendar, cuando elijo un nuevo turno libre, entonces el turno anterior se libera y la cita queda en el nuevo horario sin intervencion de recepcion."
+      ],
+      "estimate": 5,
+      "dependencies": ["US-02"],
+      "open_questions": [
+        "El inbox no define como se asegura el enlace para evitar que un tercero acceda a la cita del paciente."
+      ],
+      "priority": 5,
+      "origin": ["us:US-05", "req:R-05", "pain:reagendamiento-laborioso", "pain:espacios-perdidos-no-show"]
+    },
+    {
+      "id": "US-06",
+      "epic": "E-03",
+      "as_a": "secretaria",
+      "want": "que el sistema impida agendar dos pacientes en el mismo turno de un doctor",
+      "so_that": "eliminar el doble agendamiento y los horarios mal anotados",
+      "acceptance_criteria": [
+        "Dado un turno ya ocupado, cuando alguien (paciente o recepcion) intenta reservarlo, entonces el sistema rechaza la operacion y muestra que el turno ya no esta libre.",
+        "Dado que dos reservas llegan casi a la vez para el mismo turno, cuando se procesan, entonces solo una queda registrada y la otra es rechazada."
+      ],
+      "estimate": 5,
+      "dependencies": ["US-02"],
+      "open_questions": [
+        "El inbox no define la regla de desempate cuando dos reservas casi simultaneas compiten por el turno (orden de llegada u otra)."
+      ],
+      "priority": 6,
+      "origin": ["us:US-06", "req:R-06", "pain:doble-agendamiento", "pain:multiples-canales-sin-fuente-verdad"]
+    },
+    {
+      "id": "US-07",
+      "epic": "E-03",
+      "as_a": "secretaria",
+      "want": "registrar y actualizar el estado de cada cita (pendiente, confirmado, cancelado, atendido, no asistio) en un solo lugar",
+      "so_that": "tener una unica fuente de verdad y dejar de cruzar llamadas, WhatsApp y agenda",
+      "acceptance_criteria": [
+        "Dado cualquier turno, cuando gestiono la cita, entonces puedo marcarla como pendiente, confirmado, cancelado, atendido o no asistio.",
+        "Dado que cambio el estado de una cita, cuando el doctor consulta su agenda, entonces ve el estado actualizado al momento.",
+        "Dado un paciente que llega, cuando lo busco, entonces encuentro su cita en el sistema sin revisar mensajes ni llamadas."
+      ],
+      "estimate": 5,
+      "dependencies": ["US-02"],
+      "open_questions": [],
+      "priority": 7,
+      "origin": ["us:US-07", "req:R-07", "req:R-15", "pain:multiples-canales-sin-fuente-verdad", "pain:confirmacion-manual"]
+    },
+    {
+      "id": "US-08",
+      "epic": "E-04",
+      "as_a": "doctor",
+      "want": "ver mi agenda del dia en tiempo real con el contexto de cada cita (nombre, tipo de consulta, motivo, hora y estado)",
+      "so_that": "llegar a cada turno informado y no atender a ciegas ni sorprenderme con los cambios",
+      "acceptance_criteria": [
+        "Dado mi dia de atencion, cuando abro mi agenda, entonces veo cada cita con nombre del paciente, tipo de consulta (primera vez / control), motivo, hora asignada y estado de confirmacion.",
+        "Dado que recepcion o un paciente cambia una cita, cuando consulto la agenda, entonces el cambio se refleja sin que nadie me avise aparte."
+      ],
+      "estimate": 5,
+      "dependencies": ["US-07"],
+      "open_questions": [],
+      "priority": 8,
+      "origin": ["us:US-08", "req:R-09", "req:R-10", "pain:sin-contexto-previo", "pain:sin-visibilidad-tiempo-real", "pain:agenda-impredecible"]
+    }
+  ]
+}
